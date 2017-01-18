@@ -234,6 +234,7 @@ class CLI(cmd.Cmd):
     def do_delay(self, arg):
         num = arg.split()[0].split('\'b')[0]
         num2 = int(num)
+        print("do delay",num2)
         for k in range(0, num2):
             time.sleep(0.001)
             #print("Delay")

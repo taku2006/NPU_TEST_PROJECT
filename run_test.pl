@@ -148,7 +148,8 @@
   #Soft Reset
   printf test_ini "w 1f.1.1f 0200\n";
   printf test_ini "w 1f.1.0a 0001\n"; 
-  printf test_ini "delay 1000\n";
+  printf test_ini "delay 2000\n";
+  printf test_ini "r 1f.1.0a\n";
   #Power Up
  	printf test_ini "source powerup.ini\n";
  	if($mode =~ /dual_port_dual_bank/)
@@ -188,12 +189,16 @@
                   		"testrx\n";
         printf test_ini "w 1f.1.1 0001\n";
  	}
-
+    printf test_ini "delay 2000\n";
     printf test_ini "r 1f.2.5f0\n".
                   	"r 1f.2.5e6\n".
                   	"r 1e.2.5f0\n".
                   	"r 1e.2.5e6\n".
-                  	"r 1f.1.4\n";
+                  	"r 1f.1.4\n".
+                    "r 1f.1.6\n".
+                    "r 1f.1.26\n".
+                    "r 1f.1.7\n".
+                    "r 1f.1.27\n";
     close(test_ini);
     close(new_cfg);
  }

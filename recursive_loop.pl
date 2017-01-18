@@ -48,9 +48,9 @@ $options{single_case} = $ARGV[0];
     @cases = ($options{single_case});
   }
  
-print "Valid Dir List is : \n";
-print $_ foreach @valid_dir;#打印文件列表
-print "\n";
+#print "Valid Dir List is : \n";
+#print $_ foreach @valid_dir;#打印文件列表
+#print "\n";
 printf f_dir_list $_."\n" foreach @valid_dir;#打印文件列表
 close(f_dir_list);
 #print "@valid_dir\n";

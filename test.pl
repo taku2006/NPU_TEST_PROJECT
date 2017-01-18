@@ -33,7 +33,7 @@
  chdir $txt_out;
  
 
- @v_MYFILE = <MYFILE>;
+ #@v_MYFILE = <MYFILE>;
  $data = "data_ilk_in".$dual_port.".txt";
  $cmd  = "temp_cmd.txt";
  $cmd_len  = "temp_cmd_len.txt";
@@ -180,7 +180,7 @@ chdir $my_pwd;
 #chdir "./txt_out";
  chdir $txt_out;
 
- @v_MYFILE = <MYFILE>;
+ #@v_MYFILE = <MYFILE>;
  $data = "t_golden_ref_data".$dual_port.".txt";
  $cmd  = "temp_cmd_out.txt";
  $spep = "temp_spep_out.txt";
@@ -373,7 +373,8 @@ sub gen_3_files{
 
  $seq_len = 0;	
  
- foreach(@v_MYFILE) 
+ #foreach(@v_MYFILE) 
+ while(<MYFILE>)
  {
 
 	chomp($_);

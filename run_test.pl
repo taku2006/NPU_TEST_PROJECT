@@ -146,9 +146,9 @@
  	open (new_cfg,$dir."/txt_out/new_cfg.ini") or die "couldnot open the file: \"$dir\/txt_out\/new_cfg.ini\" \n";
  	#open (new_cfg_2,$dir."/txt_out/new_cfg_2.txt");
   #Soft Reset
-  printf test_ini "w 1f.1.1f 0200\n";
-  printf test_ini "w 1f.1.0a 0001\n"; 
-  printf test_ini "delay 2000\n";
+  printf test_ini "w 1f.1.1f 0400\n";##set soft_reset_cnt to 1 ms
+  printf test_ini "w 1f.1.0a 0001\n";##trigger soft_reset 
+  printf test_ini "delay 4000\n";###wait 4 ms
   printf test_ini "r 1f.1.0a\n";
   #Power Up
  	printf test_ini "source powerup.ini\n";

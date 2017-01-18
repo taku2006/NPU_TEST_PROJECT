@@ -37,7 +37,7 @@
  	while($line = <fp_pc_tool_log>){
  		$back=index($line,$result_str);
  		if($back != -1 || $print_log == 1){
- 			print "D. Result is: ".$line;
+ 			print "   Result is: ".$line;
  			$print_log = 1;
  		}
  	}

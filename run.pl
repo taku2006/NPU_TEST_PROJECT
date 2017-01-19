@@ -64,9 +64,9 @@
  	}
  	if( $opt_run_pctool == 1){
  		$pc_tool_log = $dir_list."\\pc_tool_log.txt";
-	 	#$cmdline="python pc_tool.py -d "."$dir_list"." > $pc_tool_log";
-	 	#print "B. run: ".$cmdline."\n";
-	 	#system($cmdline);
+	 	$cmdline="python pc_tool.py -d "."$dir_list"." > $pc_tool_log";
+	 	print "B. run: ".$cmdline."\n";
+	 	system($cmdline);
 	 	print "C. check pc_tool_log.txt\n";
 	 	open(fp_pc_tool_log,$pc_tool_log);
 	 	$print_log = 0;

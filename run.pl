@@ -1,7 +1,7 @@
  #!/usr/local/bin/perl
  use File::Basename;
  use Getopt::Long;
- use IO::Tee; 
+ #use IO::Tee; 
  use Cwd;
  my $dir=@ARGV[0];
   ##Parameter
@@ -29,20 +29,20 @@
  	print "-r: default is 1. Set to 0 will disalbe run pc_tool function.\n";
  	exit;
  }
- if(-e run_result.txt){
- 	system(rd \s \q run_result.txt);
- }
- 
- $tee = IO::Tee->new(">> run_result.txt", \*STDOUT); 
- ####Step 1: Loop Recursivly the dir and generate the dir_list.txt which record the valid dir paths"####
- if( $opt_loop == 1){
- 	print $tee "****************"."Step 1: Loop the work dir: ".$dir."****************"."\n";
+ # if(-e run_result.txt){
+ # 	open(fp_res,"<",run_result.txt);
+ # 	close(fp_res);
+ # }
+ print $opt_loop."\n";
+ ###Step 1: Loop Recursivly the dir and generate the dir_list.txt which record the valid dir paths"####
+ if($opt_loop == 1){
+ 	#print "****************"."Step 1: Loop the work dir: ".$dir."****************"."\n";
  	$cmdline="perl recursive_loop.pl ".$dir;
  	system($cmdline);
- 	print $tee "Check the dir_list.txt for the valid dir paths\n";
- }
+ 	print "Check the dir_list.txt for the valid dir paths\n";
+ }	
  else{
- 	print $tee "****************Skip Loop Function, Use the existing dir_list.txt******"."\n";
+ 	print "****************Skip Loop Function, Use the existing dir_list.txt******"."\n";
  }
  
  ####Step 2: Read the dir_list.txt and parse ipf files"
@@ -52,53 +52,52 @@
  while($dir_list=<f_dir_list>){
  	chomp($dir_list);
  	$cnt = $cnt + 1;
- 	print $tee "****************"."Step 2: Handle ".$cnt."th IPF Case at $dir_list"."****************"."\n";
+ 	print "****************"."Step 2: Handle ".$cnt."th IPF Case at $dir_list"."****************"."\n";
  	if( $opt_parse == 1){
  		$run_test_log = $dir_list."\\run_test_log.txt";
  		$cmdline="perl run_test.pl ".$dir_list." >".$run_test_log;
- 		print $tee "A. run: ".$cmdline."\n";
+ 		print "A. run: ".$cmdline."\n";
  		system($cmdline);
  	}
  	else{
- 		print $tee "Skip A. opt_parse"."\n";
+ 		print "Skip A. opt_parse"."\n";
  	}
  	if( $opt_run_pctool == 1){
  		$pc_tool_log = $dir_list."\\pc_tool_log.txt";
-	 	$cmdline="python pc_tool.py -d "."$dir_list"." > $pc_tool_log";
-	 	print $tee "B. run: ".$cmdline."\n";
-	 	system($cmdline);
-	 	print $tee "C. check pc_tool_log.txt\n";
+	 	#$cmdline="python pc_tool.py -d "."$dir_list"." > $pc_tool_log";
+	 	#print "B. run: ".$cmdline."\n";
+	 	#system($cmdline);
+	 	print "C. check pc_tool_log.txt\n";
 	 	open(fp_pc_tool_log,$pc_tool_log);
 	 	$print_log = 0;
 	 	$pass = 0;
 	 	while($line = <fp_pc_tool_log>){
 	 		$back=index($line,$result_str);
 	 		if($back != -1){
-	 			print $tee "   Result is: ".$line;
+	 			print "   Result is: ".$line;
 	 			$print_log = 1;
 	 			if($line =~ /..7a/){
 	 				$pass = 1;
 	 			}
 	 		}
 	 		if($print_log == 1){
-	 			print $tee "   Result is: ".$line;
+	 			print "   Result is: ".$line;
 	 		}
 	 	}
 	 	if($pass){
-	 		print $tee "Case Pass at ".$dir_list."\n";
+	 		print "Case Pass at ".$dir_list."\n";
 	 	}
 	 	else{
-	 		print $tee "Case Fail at ".$dir_list."\n";
+	 		print "Case Fail at ".$dir_list."\n";
 	 	}
 	 	close(fp_pc_tool_log);
  	}
  	else{
- 		print $tee " Skip B. run pc_tool\n";
- 		print $tee " Skip C. Check Result\n"; 
+ 		print " Skip B. run pc_tool\n";
+ 		print " Skip C. Check Result\n"; 
  	}
  	
  }
- ####Step 3: Involve PC_TOOL
- #print ""
+ 
 
  

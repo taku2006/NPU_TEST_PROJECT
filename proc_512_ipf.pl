@@ -3,6 +3,7 @@
  use File::Basename;
  use Cwd;
  $my_pwd=getcwd;
+ print "----------------Enter proc_512_ipf.pl----------------\n";
  print "current work path is: ",$my_pwd,"\n";
  #print "Input ARGV[2] is: ",@ARGV[2],"\n";
  #print "Input ARGV[2] type 2 is: ",$ARGV[2],"\n";
@@ -11,10 +12,11 @@
  $workdir=shift;
  #print "workdir is :",$workdir,"\n";
  $txt_out = $workdir."\\txt_out";
- #print "txt_out path is :", $txt_out,"\n";
+ print "txt_out path is :", $txt_out,"\n";
  #mkdir $txt_out;
  #chdir "./txt_out";
  chdir $txt_out;
+ print "Enter into txt_out, now the workdir is: ".$getcwd."\n";
 
 #added function to gen new npu need
 my $m_sopeop = "sop_eop_in".$dual_port.".txt";
@@ -39,7 +41,7 @@ my $tx;
 my $rx;
 my @a_tx;
 my @a_rx;
-
+my $add_1 = 1;
 chop(@v_sopeop);
 chop(@v_data_in);
 chop(@v_cmd_in);
@@ -47,6 +49,7 @@ chop(@v_cmd_in);
 
 if(($#v_data_in+1)%2 == 1) {
 	print "DEBUG0\n";
+	$add_1 = 0;
 	push @v_sopeop, "00";
 	push @v_cmd_in, "0000000000000000000000000000000000000000";
 	push @v_data_in, "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
@@ -70,7 +73,7 @@ foreach(@v_data_out) {
 	printf o_new_out $_;
 }
 
-$tx = sprintf("%08x", ($#v_data_in));
+$tx = sprintf("%08x", ($#v_data_in + add_1));
 $rx = sprintf("%08x", ($#v_data_out));
 @a_tx=split('', $tx);
 @a_rx=split('', $rx);

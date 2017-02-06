@@ -2,8 +2,48 @@
  #system "rm -rf";
  use File::Basename;
  use Cwd;
+ use Getopt::Long;
+
+ my $help = 0;
+ GetOptions(
+  'help|h!' => \$help,
+ );
+ if($help){
+  print "Involve test.pl & proc_512_ipf.pl to parse IPF file and generate data file\n";
+  print "perl run_test.pl DIR [mode] [loop]\n";
+  print "For example, run SPSB: 
+              perl run_test.pl DIR\n";
+  print "For example, loop all the sub_dirs and run DPDB : 
+              perl run_test.pl DIR dpdb loop\n";
+  print "mode: 
+              dpdb, test_mode is dual_port_dual_bank;
+              dpsb, test_mode is dual_port_single_bank;
+              loop, test_mode is single_port and loop_mode is true;
+              otherwise, test_mode is single_port\n";
+  print "loop:
+              loop, loop_mode is true;
+              otherwise, loop_mode is false;\n";
+  exit;
+ }print "----------------Enter run_test.pl----------------\n";
  printf "Wrapper of Parse script version 1.0\n";
  $my_pwd = getcwd;
+ my $os = $^O;
+ my $cp;
+ my $dir_split;
+ if($os eq "linux"){
+  print "Current System is Linux;\n";
+  $cp = "copy";
+  $dir_split = "/";
+ }
+ elsif($os eq "MSWin32"){
+  print "Current System is Windows;\n";
+  $cp = "copy /Y";
+  $dir_split = "\\";
+ }
+ else{
+  print "Current System is Unknow: ".$os." ;\n";
+  exit;
+ }
  $work_dir = $ARGV[0];
  $dual = $ARGV[1];
  $loop = $ARGV[2];
@@ -73,60 +113,68 @@
  	my $mode = @_[1];
  	my $cur =  getcwd;
  	my $cmdline = "";
- 	my $result_name = "parse_result.txt";
+ 	#my $result_name = "parse_result.txt";
  	#open (parse_result, "> $result_name") or die "open parse_result.txt failed";
  	chdir $dir;
  	#print "******************************************************************\n";
  	print "Parse IPF File in ".$dir."\n";
  	#print("In wrapper_test, current dir is: ",getcwd."\n");
  	#print "******************************************************************\n";
-
+  $txt_out = getcwd()."\\txt_out";
+  print "txt_out path is: ".$txt_out."\n";
+  if(-d $txt_out){
+    if($os eq "Linux")
+    {
+      my $cmdline= "rm -rf ".$txt_out;
+    }
+    else {
+      my $cmdline= "rd /s /q ".$txt_out;
+    } 
+    system($cmdline); 
+    print "Delete txt_out dir\n";
+  }
+  mkdir $txt_out;
  	if(($mode =~ /dual_port_dual_bank/) or ($mode =~ /dual_port_single_bank/)){#Need to FIX!!!!!!!!!!!!!!!!
  		print "Involve test.pl in ".$mode."\n";
- 		$cmdline = "perl ".$cur."/test.pl ./ilk_in.ipf ./ilk_out.ipf >".$result_name;
+ 		$cmdline = "perl ".$cur."/test.pl ./ilk_in.ipf ./ilk_out.ipf";
  		system($cmdline);
- 		$cmdline = "perl ".$cur."/test.pl ./ilk_in2.ipf ./ilk_out2.ipf _2 >".$result_name;
+ 		$cmdline = "perl ".$cur."/test.pl ./ilk_in2.ipf ./ilk_out2.ipf _2";
  		system($cmdline);
- 		#system("perl test.pl /ilk_in.ipf /ilk_out.ipf _2 >>$parse_result");
+ 		#system("perl test.pl ".$dir_split."ilk_in.ipf ".$dir_split."ilk_out.ipf _2 >>$parse_result");
  		print "Involve copy operation in ".$mode."\n";
- 		$cmdline = "copy txt_out/sim_data_ilk_in.txt 	txt_out/txt_out/data_ilk_in.txt 	>>".$result_name;
+
+ 		$cmdline = $cp." txt_out".$dir_split."sim_data_ilk_in.txt 	txt_out".$dir_split."data_ilk_in.txt";
+    print "Copy cmd is : ".$cmdline."\n";
  		system($cmdline);
- 		$cmdline = "copy txt_out/sim_cmd_ilk_in.txt 	txt_out/txt_out/data_cmd_in.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in.txt 	txt_out".$dir_split."data_cmd_in.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/sim_data_ilk_in_2.txt 	txt_out/txt_out/data_ilk_in_2.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."sim_data_ilk_in_2.txt 	txt_out".$dir_split."data_ilk_in_2.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/sim_cmd_ilk_in_2.txt 	txt_out/txt_out/data_cmd_in_2.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in_2.txt 	txt_out".$dir_split."data_cmd_in_2.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/npu_tx_linecount.txt 	txt_out/txt_out/tx_linecount.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."npu_tx_linecount.txt 	txt_out".$dir_split."tx_linecount.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/sim_sop_eop_in.txt 	txt_out/txt_out/sop_eop_in.txt 		>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."sim_sop_eop_in.txt 	txt_out".$dir_split."sop_eop_in.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/npu_tx_linecount_2.txt txt_out/txt_out/tx_linecount_2.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."npu_tx_linecount_2.txt txt_out".$dir_split."tx_linecount_2.txt";
  		system($cmdline);
- 		$cmdline = "copy txt_out/sim_sop_eop_in_2.txt 	txt_out/txt_out/sop_eop_in_2.txt 	>>".$result_name;
+ 		$cmdline = $cp." txt_out".$dir_split."sim_sop_eop_in_2.txt 	txt_out".$dir_split."sop_eop_in_2.txt";
  		system($cmdline);
- 		#system("copy txt_out/sim_data_ilk_in.txt 	txt_out/txt_out/data_ilk_in.txt 	>>$parse_result") 	or die "Fail in involve copy";
- 		#system("copy txt_out/sim_cmd_ilk_in.txt    	txt_out/txt_out/data_cmd_in.txt 	>>$parse_result") 	or die "Fail in involve copy";
- 		#system("copy txt_out/sim_data_ilk_in_2.txt 	txt_out/txt_out/data_ilk_in_2.txt 	>>$parse_result")	or die "Fail in involve copy";
- 		#system("copy txt_out/sim_cmd_ilk_in_2.txt 	txt_out/txt_out/data_cmd_in_2.txt 	>>$parse_result")	or die "Fail in involve copy";
- 		#system("copy txt_out/npu_tx_linecount.txt 	txt_out/tx_linecount.txt  			>>$parse_result")	or die "Fail in involve copy";
- 		#system("copy txt_out/sim_sop_eop_in.txt 	txt_out/sop_eop_in.txt 				>>$parse_result")	or die "Fail in involve copy";
-		#system("copy txt_out/npu_tx_linecount_2.txt txt_out/tx_linecount_2.txt 			>>$parse_result") 	or die "Fail in involve copy";
-		#system("copy txt_out/sim_sop_eop_in_2.txt 	txt_out/sop_eop_in_2.txt 			>>parse_result")	or die "Fail in involve copy";
+ 		
 		print "Involve proc_512_ipf.pl in".$mode."\n";
-		$cmdline = "perl proc_512_ipf.pl / >>".$result_name;
+		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./";
 		system($cmdline);
-		$cmdline = "perl proc_512_ipf.pl / _2 >>".$result_name;
+		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./ _2";
 		system($cmdline);
  		#system("perl proc_512_ipf.pl / >>parse_result")		 		or die "Fail in involve proc_512_ipf.pl";
  		#system("perl proc_512_ipf.pl / _2 >>parse_result")			or die "Fail in involve proc_512_ipf.pl";
  	}
  	else{
  		print "Involve test.pl in ".$mode."\n";
- 		$cmdline = "perl ".$cur."/test.pl ./ilk_in.ipf ./ilk_out.ipf >".$result_name;
+ 		$cmdline = "perl ".$cur."/test.pl ./ilk_in.ipf ./ilk_out.ipf";
  		system($cmdline);
  		print "Involve proc_512_ipf.pl in ".$mode."\n";
- 		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./ >>".$result_name;
+ 		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./";
  		system($cmdline);
  	}
  	#close(parse_result);
@@ -165,7 +213,7 @@
  		}
  		printf test_ini "testtx\n".
                   		"testrx\n".
-                  		"testttx2\n".
+                  		"testtx2\n".
                   		"testrx2\n";
         printf test_ini "w 1f.1.1 0003\n";
         close(new_cfg_2);
@@ -198,7 +246,49 @@
                     "r 1f.1.6\n".
                     "r 1f.1.26\n".
                     "r 1f.1.7\n".
-                    "r 1f.1.27\n";
+                    "r 1f.1.27\n".
+                    "r 1f.1.8\n".
+                    "r 1f.1.28\n".
+                    "r 1f.1.9\n".
+                    "r 1f.1.29\n".
+                    "r 1f.1.02\n".
+                    "r 1f.1.22\n".
+                    "r 1f.1.03\n".
+                    "r 1f.1.23\n".
+                    "r 1f.1.14\n".
+                    "r 1f.1.34\n".
+                    "r 1f.1.15\n".
+                    "r 1f.1.35\n".
+                    "r 1f.1.40\n".
+                    "r 1f.1.41\n".
+                    "r 1f.1.42\n".
+                    "r 1f.1.43\n".
+                    "r 1f.1.44\n".
+                    "r 1f.1.45\n".
+                    "r 1f.1.46\n".
+                    "r 1f.1.47\n".
+                    "r 1f.1.48\n".
+                    "r 1f.1.49\n".
+                    "r 1f.1.4a\n".
+                    "r 1f.1.4b\n".
+                    "r 1f.1.4c\n".
+                    "r 1f.1.4d\n".
+                    "r 1f.1.4e\n".
+                    "r 1f.1.4f\n".
+                    "r 1f.1.50\n".
+                    "r 1f.1.51\n".
+                    "r 1f.1.52\n".
+                    "r 1f.1.53\n".
+                    "r 1f.1.54\n".
+                    "r 1f.1.55\n".
+                    "r 1f.1.56\n".
+                    "r 1f.1.57\n".
+                    "r 1f.1.58\n".
+                    "r 1f.1.59\n".
+                    "r 1f.1.5a\n".
+                    "r 1f.1.5b\n".
+                    "r 1f.1.5c\n".
+                    "r 1f.1.5d\n";
     close(test_ini);
     close(new_cfg);
  }

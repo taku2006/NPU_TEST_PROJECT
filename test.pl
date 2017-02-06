@@ -1,7 +1,18 @@
  #!/usr/local/bin/perl
  #system "rm -rf";
  use File::Basename;
+ use Getopt::Long;
  use Cwd;
+ my $help = 0;
+ GetOptions(
+  'help|h!' => \$help,
+ );
+ if($help){
+  print "Parse IPF in SP: perl test.pl ./ilk_in.ipf ./ilk_out.ipf\n";
+  print "Parse IPF in DP: perl test.pl ./ilk_in.ipf ./ilk_out.ipf _2\n";
+  exit;
+ }
+  print "----------------Enter test.pl----------------\n";
  printf "Parse script version 1.0\n";
  $add_nops = 30;
  $add_nops_out = 30;
@@ -24,11 +35,10 @@
  #print "workdir is :",$workdir,"\n";
  $txt_out = $workdir."\\txt_out";
  print "txt_out path is: ", $txt_out,"\n";
- my $cmdline= "rd /s /q ".$txt_out;
- system($cmdline);
+ 
  #$cmdline = "mkdir ".$txt_out;
  #system($cmdline) or die "Fail in ".$cmdline;
- mkdir $txt_out;
+
  #chdir "./txt_out";
  chdir $txt_out;
  

@@ -259,13 +259,14 @@ if __name__ == "__main__":
     global d
     d = args.d
     cli = CLI()
-    f = open(args.d + "/test.ini", "r")
-    if f:
-        for line in f:
-            if not line[:-1].strip():
-                pass
-            elif line.strip()[0] != '#':
-                cli.onecmd(line)
+    if d:
+        f = open(args.d + "/test.ini", "r")
+        if f:
+            for line in f:
+                if not line[:-1].strip():
+                    pass
+                elif line.strip()[0] != '#':
+                    cli.onecmd(line)
         quit()
     else:
         cli.cmdloop()

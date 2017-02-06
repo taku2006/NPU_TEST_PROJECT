@@ -146,11 +146,11 @@
  		$cmdline = $cp." txt_out".$dir_split."sim_data_ilk_in.txt 	txt_out".$dir_split."data_ilk_in.txt";
     print "Copy cmd is : ".$cmdline."\n";
  		system($cmdline);
- 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in.txt 	txt_out".$dir_split."data_cmd_in.txt";
+ 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in.txt 	txt_out".$dir_split."cmd_ilk_in.txt";
  		system($cmdline);
  		$cmdline = $cp." txt_out".$dir_split."sim_data_ilk_in_2.txt 	txt_out".$dir_split."data_ilk_in_2.txt";
  		system($cmdline);
- 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in_2.txt 	txt_out".$dir_split."data_cmd_in_2.txt";
+ 		$cmdline = $cp." txt_out".$dir_split."sim_cmd_ilk_in_2.txt 	txt_out".$dir_split."cmd_ilk_in_2.txt";
  		system($cmdline);
  		$cmdline = $cp." txt_out".$dir_split."npu_tx_linecount.txt 	txt_out".$dir_split."tx_linecount.txt";
  		system($cmdline);
@@ -161,7 +161,7 @@
  		$cmdline = $cp." txt_out".$dir_split."sim_sop_eop_in_2.txt 	txt_out".$dir_split."sop_eop_in_2.txt";
  		system($cmdline);
  		
-		print "Involve proc_512_ipf.pl in".$mode."\n";
+		print "Involve proc_512_ipf.pl in ".$mode."\n";
 		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./";
 		system($cmdline);
 		$cmdline = "perl ".$cur."/proc_512_ipf.pl ./ _2";

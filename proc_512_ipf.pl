@@ -73,19 +73,31 @@ foreach(@v_data_out) {
 	printf o_new_out $_;
 }
 
-$tx = sprintf("%08x", ($#v_data_in + add_1));
+$tx = sprintf("%08x", ($#v_data_in + $add_1));
 $rx = sprintf("%08x", ($#v_data_out));
 @a_tx=split('', $tx);
 @a_rx=split('', $rx);
 $tx = join('', @a_tx[4..7]);
 #printf o_new_cfg "source powerup.ini\nsource align_spsb.ini\n";
-printf o_new_cfg "w 1f.1.2 ".$tx."\n";
-$tx = join('', @a_tx[0..3]);
-printf o_new_cfg "w 1f.1.22 ".$tx."\n";
-$rx = join('', @a_rx[4..7]);
-printf o_new_cfg "w 1f.1.3 ".$rx."\n";
-$rx = join('', @a_rx[0..3]);
-printf o_new_cfg "w 1f.1.23 ".$rx."\n";
+if($dual_port =~ /_2/){##Port 2
+	printf o_new_cfg "w 1f.1.14 ".$tx."\n";
+	$tx = join('', @a_tx[0..3]);
+	printf o_new_cfg "w 1f.1.34 ".$tx."\n";
+	$rx = join('', @a_rx[4..7]);
+	printf o_new_cfg "w 1f.1.15 ".$rx."\n";
+	$rx = join('', @a_rx[0..3]);
+	printf o_new_cfg "w 1f.1.35 ".$rx."\n";
+}
+else {
+	printf o_new_cfg "w 1f.1.2 ".$tx."\n";
+	$tx = join('', @a_tx[0..3]);
+	printf o_new_cfg "w 1f.1.22 ".$tx."\n";
+	$rx = join('', @a_rx[4..7]);
+	printf o_new_cfg "w 1f.1.3 ".$rx."\n";
+	$rx = join('', @a_rx[0..3]);
+	printf o_new_cfg "w 1f.1.23 ".$rx."\n";
+}
+
 #printf o_new_cfg "testtx\n".
 #                  "testrx\n".
 #                  "w 1f.1.1 0001\n".

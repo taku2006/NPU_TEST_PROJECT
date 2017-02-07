@@ -194,7 +194,7 @@
  	open (new_cfg,$dir."/txt_out/new_cfg.ini") or die "couldnot open the file: \"$dir\/txt_out\/new_cfg.ini\" \n";
  	#open (new_cfg_2,$dir."/txt_out/new_cfg_2.txt");
   #Soft Reset
-  printf test_ini "w 1f.1.1f 0400\n";##set soft_reset_cnt to 1 ms
+  printf test_ini "w 1f.1.1f ffff\n";##set soft_reset_cnt to 1 ms
   printf test_ini "w 1f.1.0a 0001\n";##trigger soft_reset 
   printf test_ini "delay 4000\n";###wait 4 ms
   printf test_ini "r 1f.1.0a\n";
@@ -241,8 +241,15 @@
     printf test_ini "r 1f.2.5f0\n".
                   	"r 1f.2.5e6\n".
                   	"r 1e.2.5f0\n".
-                  	"r 1e.2.5e6\n".
-                  	"r 1f.1.4\n".
+                  	"r 1e.2.5e6\n";
+    if($mode =~ /dual_port_dual_bank/ or $mode =~/dual_port_single_bank/){
+      print test_ini "r 1f.12.5f0\n".
+                     "r 1e.2.15f0\n".
+                     "r 1f.12.5e6\n".
+                     "r 1e.2.15e6\n";
+    }
+    print test_ini  "r 1f.1.4\n".
+                    "r 1f.1.D4\n".
                     "r 1f.1.6\n".
                     "r 1f.1.26\n".
                     "r 1f.1.7\n".

@@ -88,6 +88,7 @@ class CLI(cmd.Cmd):
             #print(dp)
             if(k == 128/8) : 
                 #print(p)
+                #print(port)
                 self.s.sendto(p, (HOST, port))
                 data = self.s.recvfrom(1024)
                 k = 1
@@ -96,7 +97,7 @@ class CLI(cmd.Cmd):
                 p = b''
             k = k + 1
         if(k != 1):
-            self.s.sendto(p, (HOST, 0xfff0))
+            self.s.sendto(p, (HOST, port))
             data = self.s.recvfrom(1024)
             print('Port0 TX Line %d : Sent' %(i))
 

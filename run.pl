@@ -24,6 +24,7 @@
  my $debug_str = "devad=01, memad=0002";
  my $print_log = 0;
  my $pass = 0;
+ my $path_name;
  if($help){
  	print "perl run.pl [-h][-l 0/1][-p 0/1][-r 0/1] DIR_PATH \n";
  	print "-h: print help info\n";
@@ -63,30 +64,41 @@
  	else{
  		print "Skip A. opt_parse"."\n";
  	}
+ 	##before run pc_tool, copy the txt_out dir since the top.ini will involve the dual_port_reg, ad_sel 
+ 	$path_name = getcwd;
+ 	$path_name =~ s/[\/]/\\/g;
+ 	$cmdline="xcopy ".$path_name."\\".$dir_list."\\txt_out ".$path_name."\\txt_out /Y /Q";
+ 	#print "Current work dir is ".$path_name."\n";
+ 	#print "cmdline is: ".$cmdline."\n";
+ 	print "B. copy the txt_out to pc_tool directory\n";
+ 	system($cmdline);
+
  	if( $opt_run_pctool == 1){##Run PC_Tool and Check the Result
  		$pc_tool_log = $dir_list."\\pc_tool_log.txt";
 	 	$cmdline="python pc_tool.py -d "."$dir_list"." > $pc_tool_log";
-	 	print "B. run: ".$cmdline."\n";
+	 	print "C. run: ".$cmdline."\n";
 	 	system($cmdline);
-	 	print "C. check pc_tool_log.txt\n";
+	 	print "D. check pc_tool_log.txt\n";
 	 	open(fp_pc_tool_log,$pc_tool_log);
 	 	$print_log = 0;
 	 	$pass = 0;
 	 	while($line = <fp_pc_tool_log>){
 	 		$back=index($line,$result_str);
 	 		if($back != -1){
-	 			print "   Result is: ".$line;
+	 			#print "   Result is: ".$line;
 	 			$print_log = 1;
 	 			if($line =~ /..7a/){##FIXME, Only for SPSB
 	 				$pass = 1;
 	 			}
 	 		}
 	 		if($print_log == 1){
-	 			print "   Result is: ".$line;
 	 			$back=index($line,$debug_str);
 		 		if($back != -1){
 		 			$print_log = 0;
 		 		}##Stop print debug_info
+		 		else{
+		 			print "   Result is: ".$line;
+		 		}
 	 		}
 	 	}
 	 	if($pass){

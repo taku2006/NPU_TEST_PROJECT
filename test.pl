@@ -12,32 +12,39 @@
   print "Parse IPF in DP: perl test.pl ./ilk_in.ipf ./ilk_out.ipf _2\n";
   exit;
  }
-  print "----------------Enter test.pl----------------\n";
- printf "Parse script version 1.0\n";
+ print "----------------Enter test.pl----------------\n";
+ printf "Parse script version 1.1\n";
+ ###handle different os
+ my $os = $^O;
+ my $dir_split;
+ if($os eq "linux"){
+  print "Current System is Linux;\n";
+  $cp = "copy";
+  $dir_split = "\/";
+ }
+ elsif($os eq "MSWin32"){
+  print "Current System is Windows;\n";
+  $cp = "copy /Y";
+  $dir_split = "\\";
+ }
+ else{
+  print "Current System is Unknow: ".$os." ;\n";
+  exit;
+ }
+ ###parse parmeter
  $add_nops = 30;
  $add_nops_out = 30;
  $add_nops_in = 30;
- #system("rd /s /q ./txt_out");
- #mkdir "txt_out";
- #chdir "./txt_out";
- #my @arg = @ARGV;
- #print "my arg is: ",@arg[2],"\n";
  $my_pwd=getcwd;
  print "current work path is: ",$my_pwd,"\n";
- #print "Input ARGV[2] is: ",@ARGV[2],"\n";
- #print "Input ARGV[2] type 2 is: ",$ARGV[2],"\n";
  $dual_port = @ARGV[2];
  print "Dual Port parameter is: ",$dual_port,"\n";
  $filename = shift;
  print "input File: ",$filename,"\n";
  open (MYFILE, "$filename") or die "couldnot open the file: \"$filename\" \n";
  $workdir=dirname($filename);
- #print "workdir is :",$workdir,"\n";
- $txt_out = $workdir."\\txt_out";
+ $txt_out = $workdir.$dir_split."txt_out";
  print "txt_out path is: ", $txt_out,"\n";
- 
- #$cmdline = "mkdir ".$txt_out;
- #system($cmdline) or die "Fail in ".$cmdline;
 
  #chdir "./txt_out";
  chdir $txt_out;
@@ -245,7 +252,13 @@ chdir $my_pwd;
   print "rx_linecount : ", $#F_data_fl+1, "\n";
   
   open (rx_cnt, '>rx_linecount'.$dual_port.".txt");
-  printf rx_cnt "w 1f.1.3 %x", $num_lines;
+  if($os eq "linux"){
+    printf rx_cnt "%x", $num_lines;
+  }
+  else{
+    printf rx_cnt "w 1f.1.3 %x", $num_lines;
+  }
+  
   close (rx_cnt);
 
   $cnt1=0;
@@ -277,7 +290,13 @@ unlink("t_golden_ref_data".$dual_port.".txt");
 
   print "tx_linecount : ", $#F_cmd_fl+1, "\n";
   open (tx_cnt, '>tx_linecount'.$dual_port.".txt");
-  printf tx_cnt "w 1f.1.2 %x", $cmd_num_lines;
+  if($os eq "linux"){
+    printf tx_cnt "%x", $cmd_num_lines;
+  }
+  else{
+    printf tx_cnt "w 1f.1.2 %x", $cmd_num_lines;
+  }
+  
   close (tx_cnt);
 
   $cnt=0;
@@ -398,21 +417,50 @@ sub gen_3_files{
 
 	   if($nibbles[0] == 5) {
 			open (dual_config, '>dual_port_reg'.$dual_port.".txt");
-			printf dual_config "w 1e.3.2c ".@nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      if($os eq "linux"){
+        printf dual_config @nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      }
+      else{
+        printf dual_config "w 1e.3.2c ".@nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      }
+			
 			close (dual_config);
 	   }
 	   if($nibbles[0] == 4) {
 			open (ad0, '>ad_sel0'.$dual_port.".txt");
-			printf ad0 "w 1e.3.2e ".@nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      if($os eq "linux"){
+        printf ad0 @nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      }
+      else{
+        printf ad0 "w 1e.3.2e ".@nibbles[13].@nibbles[14].@nibbles[15].@nibbles[16];
+      }
+			
 			close (ad0);
 			open (ad1, '>ad_sel1'.$dual_port.".txt");
-			printf ad1 "w 1e.3.30 ".@nibbles[9].@nibbles[10].@nibbles[11].@nibbles[12];
+      if($os eq "linux"){
+        printf ad1 @nibbles[9].@nibbles[10].@nibbles[11].@nibbles[12];
+      }
+      else{
+        printf ad1 "w 1e.3.30 ".@nibbles[9].@nibbles[10].@nibbles[11].@nibbles[12];
+      }
+			
 			close (ad1);
-			open (ad2, '>ad_sel2'.$dual_port.".txt");			
-			printf ad2 "w 1e.3.32 ".@nibbles[5].@nibbles[6].@nibbles[7].@nibbles[8];
+			open (ad2, '>ad_sel2'.$dual_port.".txt");		
+      if($os eq "linux"){
+        printf ad2 @nibbles[5].@nibbles[6].@nibbles[7].@nibbles[8];
+      }	
+      else{
+        printf ad2 "w 1e.3.32 ".@nibbles[5].@nibbles[6].@nibbles[7].@nibbles[8];
+      }
 			close (ad2);	
-			open (ad3, '>ad_sel3'.$dual_port.".txt");			
-			printf ad3 "w 1e.3.34 ".@nibbles[1].@nibbles[2].@nibbles[3].@nibbles[4];
+			open (ad3, '>ad_sel3'.$dual_port.".txt");		
+      if($os eq "linux"){
+        printf ad3 @nibbles[1].@nibbles[2].@nibbles[3].@nibbles[4];
+      }
+      else{
+        printf ad3 "w 1e.3.34 ".@nibbles[1].@nibbles[2].@nibbles[3].@nibbles[4];
+      }	
+			
 			close (ad3);			
 	   }	   	   
 	   if($nibbles[0] == 1) {

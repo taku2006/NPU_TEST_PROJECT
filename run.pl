@@ -29,6 +29,7 @@
  my $debug_str = "devad=01, memad=0002";
  my $print_log = 0;
  my $pass = 0;
+ my $pass_2 = 0;
  my $path_name;
  my $year_month_day=strftime("%Y%m%d",localtime());
  my $row_num = 0;
@@ -141,6 +142,9 @@
 	 			}
 	 		}
 	 		if($back_2 != -1){
+	 			if($line =~ /..7a/){##For dual port
+	 				$pass_2 = 1;
+	 			}
 	 			$temp = $line;
 	 			$temp = (split(",",$temp,4))[3];
 	 			$sig_worksheet->write($row_num,3,$temp,$format_1);
@@ -157,7 +161,8 @@
 	 	}
 	 	$sig_worksheet->write($row_num,0,$dir_list,$format_1);
 		#$sig_worksheet->write($row_num,1,"PASS",$format_1);
-	 	if($pass){
+	 	#if($pass and ($mode ~= /spsb/ or ($mode ~= /spsb/ and $pass_2))){
+	 	if($pass){##FIXME
 	 		print "Case Pass at ".$dir_list."\n";
 	 		$sig_worksheet->write($row_num,1,"PASS",$format_1);
 	 	}

@@ -314,7 +314,7 @@
     print test_ini  "source read_dbg_register_p1.txt\n";
 
     if ($mode =~ /dual_port_single_bank/){
-      print test_ini  "delay 0040";#delay 40ms to wait for port 1 done
+      print test_ini  "delay 0040\n";#delay 40ms to wait for port 1 done
       print test_ini "w 1f.1.1 2\n";
     }
     if($mode =~ /dual_port_dual_bank/ or $mode =~/dual_port_single_bank/){

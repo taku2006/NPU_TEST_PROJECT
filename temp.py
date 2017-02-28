@@ -62,8 +62,8 @@ elif opt == 3:
 	###parse ilk_in.ipf and get counters of opcode
 	print("Select function: parse ilk_in.ipf and get counters of opcode")
 	file_path = input("ilk_in.ipf path is :")
-	print("ILK Input file is",file_path+"\ilk_in.ipf")
-	fp_in = open(file_path+"\ilk_in.ipf","r")
+	print("ILK Input file is",file_path)
+	fp_in = open(file_path,"r")
 	fp_out = open("opcode_res.txt","w+")
 	opcode_0_cnt = 0
 	opcode_1_cnt = 0

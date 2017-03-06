@@ -81,7 +81,8 @@ class CLI(cmd.Cmd):
         i = 1
         print(port)
         for line in arg:
-            if len(line) != 129:
+            line = line.strip()
+            if len(line) != 128:
                 continue
             dp = self.conver2hex(line)
             p = p + dp
@@ -91,7 +92,7 @@ class CLI(cmd.Cmd):
                 #print(port)
                 self.s.sendto(p, (HOST, port))
                 data = self.s.recvfrom(1024)
-                k = 1
+                k = 0
                 print('Port0 TX Line %d : Sent' %(i))
                 i = i + 1
                 p = b''

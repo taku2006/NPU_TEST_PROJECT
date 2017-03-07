@@ -196,7 +196,9 @@
   #Soft Reset
   printf test_ini "w 1f.1.1f 0400\n";##set soft_reset_cnt to 1 ms
   printf test_ini "w 1f.1.0a 0001\n";##trigger soft_reset 
-  printf test_ini "delay 0400\n";###time unit is ms
+
+  printf test_ini "delay 0040\n";###time unit is ms
+
   printf test_ini "r 1f.1.0a\n";
   #Power Up
  	printf test_ini "source powerup.ini\n";
@@ -230,12 +232,14 @@
     while(<new_cfg_2>){
       print test_ini $_;
     }
-    
+
     printf test_ini "testtx\n".
                       "testrx\n".
                       "testtx2\n".
                       "testrx2\n";
+
     printf test_ini "source txt_out/vendor_id.txt\n";
+
     printf test_ini "w 1f.1.1 0001\n";##Firstly trigger port 1
     close(new_cfg_2);
  		##print "Now Do not Support DPSB\n";

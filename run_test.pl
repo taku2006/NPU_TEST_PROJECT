@@ -196,7 +196,7 @@
   #Soft Reset
   printf test_ini "w 1f.1.1f 0400\n";##set soft_reset_cnt to 1 ms
   printf test_ini "w 1f.1.0a 0001\n";##trigger soft_reset 
-  printf test_ini "delay 4000\n";###wait 4 ms
+  printf test_ini "delay 0400\n";###time unit is ms
   printf test_ini "r 1f.1.0a\n";
   #Power Up
  	printf test_ini "source powerup.ini\n";
@@ -211,18 +211,35 @@
  		while(<new_cfg_2>){
  			print test_ini $_;
  		}
+    
  		printf test_ini "testtx\n".
                   		"testrx\n".
                   		"testtx2\n".
                   		"testrx2\n";
+    printf test_ini "source txt_out/vendor_id.txt\n";
         printf test_ini "w 1f.1.1 0003\n";
         close(new_cfg_2);
  	}
  	elsif($mode =~ /dual_port_single_bank/){
  		print "Generate ".$filename." for Mode DPSB\n";
  		printf test_ini "source align_dpsb.ini\n";
- 		print "Now Do not Support DPSB\n";
- 		exit(-1);
+    open (new_cfg_2,$dir."/txt_out/new_cfg_2.ini") or die "couldnot open the file: \"$dir\/txt_out\/new_cfg_2.ini\" \n";
+    while(<new_cfg>){
+      print test_ini $_;
+    }
+    while(<new_cfg_2>){
+      print test_ini $_;
+    }
+    
+    printf test_ini "testtx\n".
+                      "testrx\n".
+                      "testtx2\n".
+                      "testrx2\n";
+    printf test_ini "source txt_out/vendor_id.txt\n";
+    printf test_ini "w 1f.1.1 0001\n";##Firstly trigger port 1
+    close(new_cfg_2);
+ 		##print "Now Do not Support DPSB\n";
+ 		##exit(-1);
  	}
  	else
  	{
@@ -233,62 +250,84 @@
  		while(<new_cfg>){
  			print test_ini $_;
  		}
+
  		printf test_ini "testtx\n".
                   		"testrx\n";
-        printf test_ini "w 1f.1.1 0001\n";
+    printf test_ini "source txt_out/vendor_id.txt\n";
+    printf test_ini "w 1f.1.1 0001\n";
  	}
     printf test_ini "delay 2000\n";
-    printf test_ini "r 1f.2.5f0\n".
-                  	"r 1f.2.5e6\n".
-                  	"r 1e.2.5f0\n".
-                  	"r 1e.2.5e6\n".
-                  	"r 1f.1.4\n".
-                    "r 1f.1.6\n".
-                    "r 1f.1.26\n".
-                    "r 1f.1.7\n".
-                    "r 1f.1.27\n".
-                    "r 1f.1.8\n".
-                    "r 1f.1.28\n".
-                    "r 1f.1.9\n".
-                    "r 1f.1.29\n".
-                    "r 1f.1.02\n".
-                    "r 1f.1.22\n".
-                    "r 1f.1.03\n".
-                    "r 1f.1.23\n".
-                    "r 1f.1.14\n".
-                    "r 1f.1.34\n".
-                    "r 1f.1.15\n".
-                    "r 1f.1.35\n".
-                    "r 1f.1.40\n".
-                    "r 1f.1.41\n".
-                    "r 1f.1.42\n".
-                    "r 1f.1.43\n".
-                    "r 1f.1.44\n".
-                    "r 1f.1.45\n".
-                    "r 1f.1.46\n".
-                    "r 1f.1.47\n".
-                    "r 1f.1.48\n".
-                    "r 1f.1.49\n".
-                    "r 1f.1.4a\n".
-                    "r 1f.1.4b\n".
-                    "r 1f.1.4c\n".
-                    "r 1f.1.4d\n".
-                    "r 1f.1.4e\n".
-                    "r 1f.1.4f\n".
-                    "r 1f.1.50\n".
-                    "r 1f.1.51\n".
-                    "r 1f.1.52\n".
-                    "r 1f.1.53\n".
-                    "r 1f.1.54\n".
-                    "r 1f.1.55\n".
-                    "r 1f.1.56\n".
-                    "r 1f.1.57\n".
-                    "r 1f.1.58\n".
-                    "r 1f.1.59\n".
-                    "r 1f.1.5a\n".
-                    "r 1f.1.5b\n".
-                    "r 1f.1.5c\n".
-                    "r 1f.1.5d\n";
+    # printf test_ini "r 1f.2.5f0\n".
+    #               	"r 1f.2.5e6\n".
+    #               	"r 1e.2.5f0\n".
+    #               	"r 1e.2.5e6\n";
+    # if($mode =~ /dual_port_dual_bank/ or $mode =~/dual_port_single_bank/){
+    #   print test_ini "r 1f.12.5f0\n".
+    #                  "r 1e.2.15f0\n".
+    #                  "r 1f.12.5e6\n".
+    #                  "r 1e.2.15e6\n";
+    # }
+    print test_ini "source read_align_registers.txt\n";
+    # print test_ini  "r 1f.1.4\n".
+    #                 "r 1f.1.D4\n".
+    #                 "r 1f.1.6\n".
+    #                 "r 1f.1.26\n".
+    #                 "r 1f.1.7\n".
+    #                 "r 1f.1.27\n".
+    #                 "r 1f.1.8\n".
+    #                 "r 1f.1.28\n".
+    #                 "r 1f.1.9\n".
+    #                 "r 1f.1.29\n".
+    #                 "r 1f.1.02\n".
+    #                 "r 1f.1.22\n".
+    #                 "r 1f.1.03\n".
+    #                 "r 1f.1.23\n".
+    #                 "r 1f.1.14\n".
+    #                 "r 1f.1.34\n".
+    #                 "r 1f.1.15\n".
+    #                 "r 1f.1.35\n".
+    #                 "r 1f.1.40\n".
+    #                 "r 1f.1.41\n".
+    #                 "r 1f.1.42\n".
+    #                 "r 1f.1.43\n".
+    #                 "r 1f.1.44\n".
+    #                 "r 1f.1.45\n".
+    #                 "r 1f.1.46\n".
+    #                 "r 1f.1.47\n".
+    #                 "r 1f.1.48\n".
+    #                 "r 1f.1.49\n".
+    #                 "r 1f.1.4a\n".
+    #                 "r 1f.1.4b\n".
+    #                 "r 1f.1.4c\n".
+    #                 "r 1f.1.4d\n".
+    #                 "r 1f.1.4e\n".
+    #                 "r 1f.1.4f\n".
+    #                 "r 1f.1.50\n".
+    #                 "r 1f.1.51\n".
+    #                 "r 1f.1.52\n".
+    #                 "r 1f.1.53\n".
+    #                 "r 1f.1.54\n".
+    #                 "r 1f.1.55\n".
+    #                 "r 1f.1.56\n".
+    #                 "r 1f.1.57\n".
+    #                 "r 1f.1.58\n".
+    #                 "r 1f.1.59\n".
+    #                 "r 1f.1.5a\n".
+    #                 "r 1f.1.5b\n".
+    #                 "r 1f.1.5c\n".
+    #                 "r 1f.1.5d\n";
+    print test_ini  "source read_registers_p1.txt\n";
+    print test_ini  "source read_dbg_register_p1.txt\n";
+
+    if ($mode =~ /dual_port_single_bank/){
+      print test_ini  "delay 0040\n";#delay 40ms to wait for port 1 done
+      print test_ini "w 1f.1.1 2\n";
+    }
+    if($mode =~ /dual_port_dual_bank/ or $mode =~/dual_port_single_bank/){
+      print test_ini  "source read_registers_p2.txt\n";
+      print test_ini  "source read_dbg_register_p2.txt";
+    }
+    
     close(test_ini);
     close(new_cfg);
  }

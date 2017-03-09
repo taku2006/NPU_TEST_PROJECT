@@ -56,6 +56,7 @@
  $cmd_len  = "temp_cmd_len.txt";
  $spep = "temp_spep.txt";
  $seg_len = 0;
+ $vendor = "vendor_id.txt";
  gen_3_files();
 
  open (rd_cmd, 'temp_cmd.txt');
@@ -201,6 +202,7 @@ chdir $my_pwd;
  $data = "t_golden_ref_data".$dual_port.".txt";
  $cmd  = "temp_cmd_out.txt";
  $spep = "temp_spep_out.txt";
+ $vendor = "vendor_id".$dual_port.".txt";
  gen_3_files(); 
 
  unlink("temp_spep_out.txt");
@@ -387,7 +389,7 @@ sub gen_3_files{
  open (MYFILE2, ">$cmd");
  open (MYFILE3, ">$spep");
  open (MYFILE4, ">$cmd_len");
-
+ open (MYFILE5, ">$vendor");
  my $i = 0;
  my $k = 0;
  my $j = 0;
@@ -408,6 +410,11 @@ sub gen_3_files{
 
 	chomp($_);
     $_ =~ s/\r//g;
+  #Handle Vendor ID
+  if($_ =~ /\# Vendor/) {
+    @nibbles=split('',$_);
+    printf MYFILE5 "w 1e.3.1c ".@nibbles[-1];
+  }
 
 	if($_ !~ /\#/) {
        $return = 0;

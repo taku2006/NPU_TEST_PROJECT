@@ -23,6 +23,9 @@ $options{single_case} = $ARGV[0];
         #print "Dir: ",$files[0];
         opendir $dh, $files[0] or die $!;#打开目录句柄,若失败打印错误信息
         @_ = grep { /^[^\.]/ } readdir $dh;#过滤掉以"."和".."的文件,即UNIX下的隐藏文件
+        foreach $my_file in $_ {
+          print "file is ".$my_file."\n";
+        }
         if(grep {$_ eq $tag} @_){
           #print "Have ilk_in.ipf, valid dir\n";
           push(@valid_dir,$files[0]);
